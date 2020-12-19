@@ -9,4 +9,4 @@ The aim of this project is to train agents using Reinforcement Learning algorith
 
 - https://github.com/moejoe95
 - https://github.com/pintonos
-- Phil
+- https://github.com/phillipkommer
