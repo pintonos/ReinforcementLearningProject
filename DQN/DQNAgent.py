@@ -9,35 +9,38 @@ from keras.optimizers import Adam
 # set random seed
 random.seed(123456)
 
+
 class DQNAgent:
     def __init__(self, state_size, action_size, args):
         self.state_size = state_size
         self.action_size = action_size
 
+        # agent hyperparameters
         self.memory = deque(maxlen=2000)
-        self.gamma = args.gamma
-        self.epsilon = args.epsilon
-        self.epsilon_min = args.epsilon_min
-        self.epsilon_decay = args.epsilon_decay
+        self.gamma = 0.95  # discount factor
+        self.epsilon = 1.0  # exploration rate
+        self.epsilon_min = 0.01  # min. exploration rate
+        self.epsilon_decay = 0.995
         self.learning_rate = args.learning_rate
+        self.num_units = [100, 100]  # number of units in each layer (except output layer)
 
         self.train = args.is_train
         if self.train:
             self.epsilon = 0.0
 
-        self.tb_callback = callbacks.TensorBoard(log_dir=args.log_dir)
-
         self.model = self._build_model()
 
     def _build_model(self):
-        # TODO replace with a real "deep" network
-
         model = Sequential()
-        model.add(Dense(24, input_dim=self.state_size, activation='relu'))
-        model.add(Dense(24, activation='relu'))
+        # input layer
+        model.add(Dense(self.num_units[0], input_dim=self.state_size, activation='relu'))
+        # hidden layers
+        for hidden_units in self.num_units[1:]:     
+            model.add(Dense(hidden_units, activation='relu'))
+        # output layer
         model.add(Dense(self.action_size, activation='linear'))
-        model.compile(loss='mse',
-                      optimizer=Adam(lr=self.learning_rate))
+
+        model.compile(loss='mse', optimizer=Adam(lr=self.learning_rate))
         return model
 
     def memorize(self, state, action, reward, next_state, done):
@@ -53,6 +56,7 @@ class DQNAgent:
 
     def replay(self, batch_size):
         minibatch = random.sample(self.memory, batch_size)
+        states, targets = [], []
         for state, action, reward, next_state, done in minibatch:
             target = reward
             if not done:
@@ -60,8 +64,10 @@ class DQNAgent:
                           np.amax(self.model.predict(next_state)[0]))
             target_f = self.model.predict(state)
             target_f[0][action] = target
-            # move this line outside for loop?
-            self.model.fit(state, target_f, epochs=1, verbose=0, callbacks=[self.tb_callback])
+            states.append(state[0])
+            targets.append(target_f[0])
+
+        self.model.fit(np.array(states), np.array(targets), epochs=1, verbose=0)
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
 
