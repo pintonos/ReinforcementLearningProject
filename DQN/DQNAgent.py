@@ -23,12 +23,14 @@ class DQNAgent:
         self.epsilon_decay = 0.995
         self.learning_rate = args.learning_rate
         self.num_units = [100, 100]  # number of units in each layer (except output layer)
+        self.batch_size = 32
 
         self.train = args.is_train
         if self.train:
             self.epsilon = 0.0
 
         self.model = self._build_model()
+
 
     def _build_model(self):
         model = Sequential()
@@ -43,10 +45,12 @@ class DQNAgent:
         model.compile(loss='mse', optimizer=Adam(lr=self.learning_rate))
         return model
 
+
     def memorize(self, state, action, reward, next_state, done):
         if not self.train: # dont memorize in testing mode
             return
         self.memory.append((state, action, reward, next_state, done))
+
 
     def act(self, state):
         if np.random.rand() <= self.epsilon:
@@ -54,8 +58,10 @@ class DQNAgent:
         act_values = self.model.predict(state)
         return np.argmax(act_values[0])  # returns action
 
-    def replay(self, batch_size):
-        minibatch = random.sample(self.memory, batch_size)
+
+    def replay(self):
+        # maybe don't resample on every timestep (see readme)
+        minibatch = random.sample(self.memory, self.batch_size)
         states, targets = [], []
         for state, action, reward, next_state, done in minibatch:
             target = reward
@@ -68,11 +74,14 @@ class DQNAgent:
             targets.append(target_f[0])
 
         self.model.fit(np.array(states), np.array(targets), epochs=1, verbose=0)
+
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
 
+
     def load(self, name):
         self.model.load_weights(name)
+
 
     def save(self, name):
         self.model.save_weights(name)
