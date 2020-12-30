@@ -21,9 +21,10 @@ class DDQNAgent:
         self.epsilon = 1.0  # exploration rate
         self.epsilon_min = 0.01  # min. exploration rate
         self.epsilon_decay = 0.995
-        self.learning_rate = args.learning_rate
         self.num_units = [100, 100]  # number of units in each layer (except output layer)
-        self.batch_size = 32
+        self.learning_rate = 0.001
+        
+        self.batch_size = args.batch_size
         
         self.target_update_interval = 100
         self.update_count = 0

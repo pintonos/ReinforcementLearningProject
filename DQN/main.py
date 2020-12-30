@@ -30,8 +30,8 @@ argparser.add_argument("--episodes", default=1000, type=int,
   help="number of episodes")
 argparser.add_argument("--punishment", default=-10, type=int, 
   help="negative reward on failure")
-argparser.add_argument("--learning_rate", default=0.001, type=float, 
-  help="learning rate")
+argparser.add_argument("--batch_size", default=32, type=int, 
+  help="minibatch size for replay buffer")
 
 args = argparser.parse_args()
 
