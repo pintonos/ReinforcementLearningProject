@@ -20,7 +20,7 @@ argparser.add_argument("--model", default="./model/dqn-acrobot.h5", type=str,
 argparser.add_argument("--log_file", default="./model/dqn-acrobot.out", type=str, 
   help="log file")
 
-argparser.add_argument("--save_interval", default=50, type=int, 
+argparser.add_argument("--save_interval", default=25, type=int, 
   help="interval of saving models, default: 10 episodes")
 argparser.add_argument("--env", default="Acrobot-v1", type=str, 
   help="OpenAI gym environment")
@@ -32,8 +32,7 @@ argparser.add_argument("--max_steps", default=500, type=int,
   help="max. number of steps per episode")
 argparser.add_argument("--punishment", default=-1, type=int, 
   help="negative reward on failure")
-argparser.add_argument("--batch_size", default=32, type=int, 
-  help="minibatch size for replay buffer")
+
 
 args = argparser.parse_args()
 
@@ -64,10 +63,11 @@ for episode in range(args.episodes):
         reward = reward if not done else args.punishment
         sum_reward += reward
         next_state = np.reshape(next_state, [1, state_size])
+
         agent.memorize(state, action, reward, next_state, done)
         state = next_state
-        if len(agent.memory) > args.batch_size:
-            agent.replay()
+
+        agent.replay()
         step += 1
 
     utils.log(args.log_file, str(episode) + ',' + str(sum_reward))

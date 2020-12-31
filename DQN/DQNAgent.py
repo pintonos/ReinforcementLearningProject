@@ -21,10 +21,12 @@ class DQNAgent:
         self.epsilon = 1.0  # exploration rate
         self.epsilon_min = 0.01  # min. exploration rate
         self.epsilon_decay = 0.995
-        self.num_units = [100, 100]  # number of units in each layer (except output layer)
+        self.num_units = [24, 24]  # number of units in each layer (except output layer)
         self.learning_rate = 0.001
         
-        self.batch_size = args.batch_size
+        self.batch_size = 32
+        self.update_count = 0
+        self.update_interval = 4
 
         self.train = args.is_train
         if self.train:
@@ -61,7 +63,11 @@ class DQNAgent:
 
 
     def replay(self):
-        # maybe don't resample on every timestep (see readme)
+        # update network not in every time step
+        self.update_count += 1
+        if self.update_count % self.update_interval != 0 or len(self.memory) <= self.batch_size:
+            return
+
         minibatch = random.sample(self.memory, self.batch_size)
         states, targets = [], []
         for state, action, reward, next_state, done in minibatch:
