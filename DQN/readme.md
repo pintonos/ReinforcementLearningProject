@@ -4,7 +4,6 @@ A simplistic implementation of a DQN.
 
 ## TODOs
 
-- switch to `Acrobot-v1` environment
 - use huber loss
 - use prioritized experience replay
 - dont update replay buffer in every time step. The paper 'Deep Reinforcement Learning with Double Q-learning' says: 'The memory gets sampled to update the network every 4 steps with minibatches of size 32.'
