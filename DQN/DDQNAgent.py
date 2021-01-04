@@ -10,7 +10,7 @@ from keras.optimizers import Adam
 random.seed(123456)
 
 
-class DQNAgent:
+class DDQNAgent:
     def __init__(self, state_size, action_size, args):
         self.state_size = state_size
         self.action_size = action_size
@@ -21,10 +21,12 @@ class DQNAgent:
         self.epsilon = 1.0  # exploration rate
         self.epsilon_min = 0.01  # min. exploration rate
         self.epsilon_decay = 0.995
-        self.num_units = [24, 24]  # number of units in each layer (except output layer)
+        self.num_units = [100, 100]  # number of units in each layer (except output layer)
         self.learning_rate = 0.001
         
         self.batch_size = 32
+        
+        self.target_update_interval = 100
         self.update_count = 0
         self.update_interval = 4
 
@@ -33,6 +35,8 @@ class DQNAgent:
             self.epsilon = 0.0
 
         self.model = self._build_model()
+        # second network
+        self.target_model = self._build_model()
 
 
     def _build_model(self):
@@ -49,6 +53,10 @@ class DQNAgent:
         return model
 
 
+    def update_target_model(self):
+        self.target_model.set_weights(self.model.get_weights)
+
+
     def memorize(self, state, action, reward, next_state, done):
         if not self.train: # dont memorize in testing mode
             return
@@ -63,7 +71,7 @@ class DQNAgent:
 
 
     def replay(self):
-        # update network not in every time step
+        
         self.update_count += 1
         if self.update_count % self.update_interval != 0 or len(self.memory) <= self.batch_size:
             return
@@ -74,7 +82,7 @@ class DQNAgent:
             target = reward
             if not done:
                 target = (reward + self.gamma *
-                          np.amax(self.model.predict(next_state)[0]))
+                          np.amax(self.target_model.predict(next_state)[0]))
             target_f = self.model.predict(state)
             target_f[0][action] = target
             states.append(state[0])
@@ -84,6 +92,11 @@ class DQNAgent:
 
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
+
+        # update target model 
+        if self.update_count > self.target_update_interval:
+            self.update_target_model()
+            self.update_count = 0
 
 
     def load(self, name):

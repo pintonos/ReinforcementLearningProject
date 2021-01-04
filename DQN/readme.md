@@ -4,13 +4,13 @@ A simplistic implementation of a DQN.
 
 ## TODOs
 
-- replace current neural network by a more complex one
-  - example: https://github.com/devsisters/DQN-tensorflow
-- switch to `Acrobot-v1` environment
-- use two neural networks (double DQN)
 - use huber loss
+- use prioritized experience replay
+- use He initialization
 
 ## References
 
 - https://keon.github.io/deep-q-learning/
 - https://github.com/keon/deep-q-learning/
+- https://arxiv.org/pdf/1509.06461v3.pdf
+- https://towardsdatascience.com/deep-q-learning-tutorial-mindqn-2a4c855abffc   
