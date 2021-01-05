@@ -1,10 +1,11 @@
 import random
 import numpy as np
 from collections import deque
-from keras import callbacks
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.optimizers import Adam
+from tensorflow import keras
+from tensorflow.keras import callbacks
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.optimizers import Adam
 
 # set random seed
 random.seed(123456)
@@ -16,15 +17,15 @@ class DDQNAgent:
         self.action_size = action_size
 
         # agent hyperparameters
-        self.memory = deque(maxlen=2000)
+        self.memory = deque(maxlen=10000)
         self.gamma = 0.95  # discount factor
         self.epsilon = 1.0  # exploration rate
         self.epsilon_min = 0.01  # min. exploration rate
         self.epsilon_decay = 0.995
-        self.num_units = [100, 100]  # number of units in each layer (except output layer)
+        self.num_units = [128, 128]  # number of units in each layer (except output layer)
         self.learning_rate = 0.001
         
-        self.batch_size = 32
+        self.batch_size = 128
         
         self.target_update_interval = 100
         self.update_count = 0
@@ -54,7 +55,7 @@ class DDQNAgent:
 
 
     def update_target_model(self):
-        self.target_model.set_weights(self.model.get_weights)
+        self.target_model.set_weights(self.model.get_weights())
 
 
     def memorize(self, state, action, reward, next_state, done):
