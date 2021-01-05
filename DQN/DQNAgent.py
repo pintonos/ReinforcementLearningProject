@@ -51,20 +51,31 @@ class DQNAgent:
 
 
     def memorize(self, state, action, reward, next_state, done):
+        """
+        append experience to replay buffer
+        """
         if not self.train: # dont memorize in testing mode
             return
         self.memory.append((state, action, reward, next_state, done))
 
 
     def act(self, state):
-        if np.random.rand() <= self.epsilon:
+        """
+        epsilon-greedy action selection
+        """
+        if np.random.rand() <= self.epsilon: # select random action
             return random.randrange(self.action_size)
+
+        # predict best action
         act_values = self.model.predict(state)
-        return np.argmax(act_values[0])  # returns action
+        return np.argmax(act_values[0])
 
 
     def replay(self):
-        # update network not in every time step
+        """
+        update the network with samples form memory
+        """
+        # dont update network in every time step
         self.update_count += 1
         if self.update_count % self.update_interval != 0 or len(self.memory) <= self.batch_size:
             return

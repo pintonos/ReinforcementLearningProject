@@ -57,7 +57,7 @@ def main():
       done = False
       step = 0
       sum_reward = 0
-      while not done and step < args.max_steps:
+      while not done and step < args.max_steps: # break up after max_steps or when done
           # env.render()
           action = agent.act(state)
           next_state, reward, done, _ = env.step(action)
@@ -65,9 +65,11 @@ def main():
           sum_reward += reward
           next_state = np.reshape(next_state, [1, state_size])
 
+          # write into replay buffer
           agent.memorize(state, action, reward, next_state, done)
           state = next_state
 
+          # update agent
           agent.replay()
           step += 1
 

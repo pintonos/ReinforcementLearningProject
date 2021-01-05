@@ -55,16 +55,25 @@ class DDQNAgent:
 
 
     def update_target_model(self):
+        """
+        update target model by copying weights from model
+        """
         self.target_model.set_weights(self.model.get_weights())
 
 
     def memorize(self, state, action, reward, next_state, done):
+        """
+        append experience to replay buffer
+        """
         if not self.train: # dont memorize in testing mode
             return
         self.memory.append((state, action, reward, next_state, done))
 
 
     def act(self, state):
+        """
+        epsilon-greedy action selection
+        """
         if np.random.rand() <= self.epsilon:
             return random.randrange(self.action_size)
         act_values = self.model.predict(state)
@@ -72,7 +81,9 @@ class DDQNAgent:
 
 
     def replay(self):
-        
+        """
+        update the network with samples form memory
+        """       
         self.update_count += 1
         if self.update_count % self.update_interval != 0 or len(self.memory) <= self.batch_size:
             return
