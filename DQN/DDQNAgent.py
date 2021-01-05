@@ -29,7 +29,7 @@ class DDQNAgent:
         
         self.target_update_interval = 100
         self.update_count = 0
-        self.update_interval = 4
+        self.update_interval = 8
 
         self.train = args.is_train
         if self.train:

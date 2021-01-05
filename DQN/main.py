@@ -28,7 +28,7 @@ argparser.add_argument("--env", default="Acrobot-v1", type=str,
 # TRAINING HYPERPARAMETERS
 argparser.add_argument("--episodes", default=1000, type=int, 
   help="number of episodes")
-argparser.add_argument("--max_steps", default=1000, type=int, 
+argparser.add_argument("--max_steps", default=500, type=int, 
   help="max. number of steps per episode")
 argparser.add_argument("--punishment", default=-1, type=int, 
   help="negative reward on failure")
