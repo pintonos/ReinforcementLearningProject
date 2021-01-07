@@ -6,8 +6,6 @@ __pycache__/
 # C extensions
 *.so
 
-# TF model files
-*.h5
 # TF events
 events.out.*
 *.out

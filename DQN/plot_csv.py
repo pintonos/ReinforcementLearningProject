@@ -7,8 +7,8 @@ import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 
-csv_in_path = 'model/ddqn-acrobot-v1.out'
-png_out_path = 'model/dqn-acrobot.png'
+csv_in_path = 'results/ddqn-acrobot.out'
+png_out_path = 'results/dqn-acrobot.png'
 
 data = pd.read_csv(csv_in_path)
 

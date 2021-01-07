@@ -17,7 +17,7 @@ argparser.set_defaults(is_train=True)
 
 argparser.add_argument("--model", default="./model/ddqn-acrobot.h5", type=str, 
   help="load pretrained weights")
-argparser.add_argument("--log_file", default="./model/ddqn-acrobot.out", type=str, 
+argparser.add_argument("--log_file", default="./results/ddqn-acrobot.csv", type=str, 
   help="log file")
 
 argparser.add_argument("--save_interval", default=50, type=int, 
