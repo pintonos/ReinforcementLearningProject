@@ -15,13 +15,13 @@ argparser.add_argument('--train', dest='is_train', action='store_true')
 argparser.add_argument('--test', dest='is_train', action='store_false')
 argparser.set_defaults(is_train=True)
 
-argparser.add_argument("--model", default="./model/ddqn-acrobot.h5", type=str, 
+argparser.add_argument("--model", default="./model/dqn-acrobot.h5", type=str, 
   help="load pretrained weights")
-argparser.add_argument("--log_file", default="./results/ddqn-acrobot.csv", type=str, 
+argparser.add_argument("--log_file", default="./results/dqn-acrobot.csv", type=str, 
   help="log file")
 
-argparser.add_argument("--save_interval", default=50, type=int, 
-  help="interval of saving models, default: 50 episodes")
+argparser.add_argument("--save_interval", default=100, type=int, 
+  help="interval of saving models, default: 100 episodes")
 argparser.add_argument("--env", default="Acrobot-v1", type=str, 
   help="OpenAI gym environment")
 
@@ -43,7 +43,7 @@ def main():
   action_size = env.action_space.n
 
   # init agent, load weights
-  agent = DDQNAgent(state_size, action_size, args)
+  agent = DQNAgent(state_size, action_size, args)
   if os.path.exists(args.model):
     agent.load(args.model)
 

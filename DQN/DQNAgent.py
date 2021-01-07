@@ -22,12 +22,12 @@ class DQNAgent:
         self.epsilon = 1.0  # exploration rate
         self.epsilon_min = 0.01  # min. exploration rate
         self.epsilon_decay = 0.995
-        self.num_units = [80, 80]  # number of units in each layer (except output layer)
+        self.num_units = [128, 128]  # number of units in each layer (except output layer)
         self.learning_rate = 0.001
         
-        self.batch_size = 64
+        self.batch_size = 128
         self.update_count = 0
-        self.update_interval = 4
+        self.update_interval = 8
 
         self.train = args.is_train
         if self.train:
