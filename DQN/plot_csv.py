@@ -7,13 +7,13 @@ import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 
-csv_in_path = 'results/ddqn-acrobot.csv'
-png_out_path = 'results/ddqn-acrobot.png'
+csv_in_path = 'results/dqn-acrobot.csv'
+png_out_path = 'results/dqn-acrobot.png'
 
 data = pd.read_csv(csv_in_path)
 
 plt.scatter(data['step'], data['score'])
-plt.title('DDQN Acrobot-v1')
+plt.title('DQN Acrobot-v1')
 plt.xlabel('episodes')
 plt.ylabel('score')
 
