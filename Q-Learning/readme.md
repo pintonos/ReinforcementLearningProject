@@ -1,4 +1,4 @@
-## README for Q-Learning with a neural network as the function approximator 
+## README for Deep Q-Learning
 
 ### Setup
 
