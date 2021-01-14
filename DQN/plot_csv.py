@@ -1,8 +1,5 @@
-import sys
-import csv
 import numpy as np
 import pandas as pd
-import os.path
 import matplotlib
 import argparse
 matplotlib.use('Agg')
@@ -29,21 +26,24 @@ argparser.add_argument("--png", required=True, type=str,
   help="output png file")
 args = argparser.parse_args()
 
-
+# scatter data
 data = pd.read_csv(args.csv)
 
+# smoothed average of last 10 episodes
+rewards_smoothed = pd.Series.rolling(pd.Series(data['score']), 10).mean()
+rewards_smoothed = [elem for elem in rewards_smoothed]
+
 plt.scatter(data['step'], data['score'])
-plt.title('DQN Acrobot-v1')
+plt.plot(rewards_smoothed, color='orange')
 plt.xlabel('Episode')
 plt.ylabel('Reward')
+plt.grid(True)
 
-# print avg. score of last 100 episodes
+# add avg. score of last 100 episodes
 last_100 = data["score"][-100:]
 avg_last_100 = sum(last_100)/100
-print('avg score of last 100 episodes:', avg_last_100)
 plt.axhline(y=avg_last_100, color='r', linestyle='-')
 plt.text(-175, avg_last_100-5, avg_last_100)
 
-plt.grid(True)
 plt.savefig(args.png)
 plt.close()
