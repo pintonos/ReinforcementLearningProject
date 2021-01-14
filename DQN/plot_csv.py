@@ -45,5 +45,5 @@ avg_last_100 = sum(last_100)/100
 plt.axhline(y=avg_last_100, color='r', linestyle='-')
 plt.text(-175, avg_last_100-5, avg_last_100)
 
-plt.savefig(args.png)
+plt.savefig(args.png, dpi=600)
 plt.close()
