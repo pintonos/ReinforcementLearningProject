@@ -4,7 +4,7 @@ This folder contains an implementation of the reinforcement learning algorithms 
 
 To reproduce the results, first install the dependencies:
 ```
-$ python venv env
+$ python -m venv env
 $ source env/bin/activate
 $ pip install --upgrade pip
 $ pip install -r requirements
