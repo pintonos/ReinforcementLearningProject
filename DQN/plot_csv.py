@@ -1,29 +1,49 @@
-import sys
-import csv
 import numpy as np
 import pandas as pd
-import os.path
 import matplotlib
+import argparse
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 
-csv_in_path = 'results/dqn-acrobot.csv'
-png_out_path = 'results/dqn-acrobot.png'
 
-data = pd.read_csv(csv_in_path)
+""" interface of plot_csv.py
+
+usage: plot_csv.py [-h] --csv CSV --png PNG
+
+plot_csv
+
+optional arguments:
+  -h, --help  show this help message and exit
+  --csv CSV   input csv file
+  --png PNG   output png file
+"""
+
+
+argparser = argparse.ArgumentParser(description="plot_csv")
+argparser.add_argument("--csv", required=True, type=str, 
+  help="input csv file")
+argparser.add_argument("--png", required=True, type=str, 
+  help="output png file")
+args = argparser.parse_args()
+
+# scatter data
+data = pd.read_csv(args.csv)
+
+# smoothed average of last 10 episodes
+rewards_smoothed = pd.Series.rolling(pd.Series(data['score']), 10).mean()
+rewards_smoothed = [elem for elem in rewards_smoothed]
 
 plt.scatter(data['step'], data['score'])
-plt.title('DQN Acrobot-v1')
-plt.xlabel('episodes')
-plt.ylabel('score')
+plt.plot(rewards_smoothed, color='orange')
+plt.xlabel('Episode')
+plt.ylabel('Reward')
+plt.grid(True)
 
-# print avg. score of last 100 episodes
+# add avg. score of last 100 episodes
 last_100 = data["score"][-100:]
 avg_last_100 = sum(last_100)/100
-print('avg score of last 100 episodes:', avg_last_100)
 plt.axhline(y=avg_last_100, color='r', linestyle='-')
 plt.text(-175, avg_last_100-5, avg_last_100)
 
-plt.grid(True)
-plt.savefig(png_out_path)
+plt.savefig(args.png, dpi=600)
 plt.close()
