@@ -7,6 +7,30 @@ import tensorflow as tf
 from DQNAgent import DQNAgent
 from DDQNAgent import DDQNAgent
 
+""" interface of main.py
+
+usage: main.py [-h] [--train] [--test] [--model MODEL] [--log_file LOG_FILE] [--save_interval SAVE_INTERVAL] [--env ENV] --agent AGENT [--episodes EPISODES] [--max_steps MAX_STEPS]
+               [--punishment PUNISHMENT]
+
+DQN
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --train
+  --test
+  --model MODEL         load pretrained weights
+  --log_file LOG_FILE   log file
+  --save_interval SAVE_INTERVAL
+                        interval of saving models, default: 100 episodes
+  --env ENV             OpenAI gym environment
+  --agent AGENT         use DQN or DDQN agent
+  --episodes EPISODES   number of episodes
+  --max_steps MAX_STEPS
+                        max. number of steps per episode
+  --punishment PUNISHMENT
+                        negative reward on failure
+"""
+
 
 argparser = argparse.ArgumentParser(description="DQN")
 
@@ -15,17 +39,19 @@ argparser.add_argument('--train', dest='is_train', action='store_true')
 argparser.add_argument('--test', dest='is_train', action='store_false')
 argparser.set_defaults(is_train=True)
 
+# save, load, logging directories
 argparser.add_argument("--model", default="./model/dqn-acrobot.h5", type=str, 
   help="load pretrained weights")
 argparser.add_argument("--log_file", default="./results/dqn-acrobot.csv", type=str, 
   help="log file")
-
 argparser.add_argument("--save_interval", default=100, type=int, 
   help="interval of saving models, default: 100 episodes")
-argparser.add_argument("--env", default="Acrobot-v1", type=str, 
-  help="OpenAI gym environment")
 
 # TRAINING HYPERPARAMETERS
+argparser.add_argument("--env", default="Acrobot-v1", type=str, 
+  help="OpenAI gym environment")
+argparser.add_argument("--agent", required=True, type=str, 
+  help="use DQN or DDQN agent")
 argparser.add_argument("--episodes", default=1000, type=int, 
   help="number of episodes")
 argparser.add_argument("--max_steps", default=500, type=int, 
@@ -35,6 +61,11 @@ argparser.add_argument("--punishment", default=-1, type=int,
 
 args = argparser.parse_args()
 
+AgentType = {
+  "DQN": DQNAgent, 
+  "DDQN": DDQNAgent
+}
+
 
 def main():
   # setting up gym environment
@@ -43,7 +74,7 @@ def main():
   action_size = env.action_space.n
 
   # init agent, load weights
-  agent = DQNAgent(state_size, action_size, args)
+  agent = AgentType[args.agent](state_size, action_size, args)
   if os.path.exists(args.model):
     agent.load(args.model)
 
@@ -80,16 +111,4 @@ def main():
 
 
 if __name__ == '__main__':
-
-  # CLUSTER SETUP #
-  physical_devices = tf.config.experimental.list_physical_devices('GPU')
-  assert len(physical_devices) > 0, "Not enough GPU hardware devices available"
-  for r in range(len(physical_devices)):
-    tf.config.experimental.set_memory_growth(physical_devices[r], True)
-
-  try:
-    import cluster_setup
-  except ImportError:
-    pass
-  
   main()
