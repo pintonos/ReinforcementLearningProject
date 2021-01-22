@@ -3,3 +3,4 @@ torch==1.7.1
 gym==0.17.3
 numpy==1.19.1
 pandas==0.20.3
+tqdm==4.56.0
